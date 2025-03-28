@@ -114,6 +114,7 @@ def clean_instagram_html(html: str) -> str:
     return re.sub(r"\s+", " ", cleaned_html).strip()
 
 
+
 async def fetch_website_details(crawler: AsyncWebCrawler, url: str, llm_website_strategy: LLMExtractionStrategy):
     """
     Fetch the content of the website using the crawler and extract additional info.
