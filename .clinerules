@@ -1,0 +1,31 @@
+# Cline Rules: AI Prospector
+
+## Project Overview
+
+- **Goal:** Streamlit app to find Instagram leads via Google Search, with optional AI query generation (Groq) and subprocess-based crawling (`crawl.py` using `crawl4ai`/Gemini).
+- **Core Components:** `app.py` (Streamlit UI, control), `crawl.py` (crawler logic), `leads.csv` (output).
+- **Key Libraries:** `streamlit`, `pandas`, `groq`, `crawl4ai`, `subprocess`, `threading`.
+
+## Development Patterns & Preferences
+
+- **Memory Bank:** Maintain the Memory Bank files (`memory-bank/`) meticulously. Read them at the start of each session. Update them after significant changes or upon user request (`update memory bank`).
+- **Process Management:** Use `subprocess.Popen` to run `crawl.py` independently from `app.py`. Use `sys.executable` to ensure environment consistency.
+- **Logging:** Capture `crawl.py`'s `stdout`/`stderr` using `subprocess.PIPE`. Use a separate `threading.Thread` in `app.py` to read the log stream without blocking the UI. Display logs in a `st.text_area`.
+- **State Management:** Rely heavily on `st.session_state` for UI state, intermediate data (like generated queries), logs, and process status (`running`, `proc`). Initialize state variables at the start of `app.py`.
+- **Configuration:** Use environment variables (`.env` file) for API keys (`GEMINI_API_KEY`, `GROQ_API_KEY`). Check for key existence and disable relevant features gracefully if missing.
+- **UI Flow:** Structure the Streamlit app logically (e.g., Query Gen -> Final Query -> Start -> Log -> Results). Use `st.button`, `st.text_input`, `st.text_area`, `st.dataframe`, `st.info/warning/error/success`, `st.empty`.
+- **Error Handling:** Implement `try-except` blocks for API calls (`groq`), file operations (`pd.read_csv`), and potentially around subprocess interactions. Report errors clearly in the UI (`st.error`) and logs.
+- **Dependencies:** Keep `requirements.txt` updated. Add new dependencies like `groq`.
+
+## Tool Usage Notes
+
+- Use `write_to_file` for creating new files or complete overwrites (like the initial Memory Bank setup or potentially large `app.py` refactors if needed).
+- Prefer `replace_in_file` for targeted modifications to existing files (like adding imports, functions, or UI elements to `app.py`). Pay close attention to the `final_file_content` provided after edits to ensure subsequent `SEARCH` blocks match exactly, including auto-formatting changes.
+- Use `read_file` to examine existing code before modifying.
+- Use `list_files` to check directory contents (like the initial Memory Bank check).
+
+## Future Considerations
+
+- Monitor `crawl.py` for breakages due to website changes.
+- Consider adding more sophisticated error handling and reporting.
+- Explore ways to make the log monitoring thread more robust.

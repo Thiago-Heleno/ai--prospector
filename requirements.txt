@@ -1,0 +1,4 @@
+crawl4ai
+pandas
+streamlit
+groq
